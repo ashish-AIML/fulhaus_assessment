@@ -164,8 +164,8 @@ Now, if any of the code is changed, the `docker-image.yml` script is executed. W
 
 --------------------------------------------------------------------------
 
-So, we have:
+The outcomes from this repository:
 1. Trained an image classification model, saved the weights
-2. Build an API using Flask and visualised the requests and outputs in the Postman
+2. Built an API using Flask and visualised the requests and outputs in the Postman
 3. Created Dockerfile of the API
-4. Created Github Actions for CI/CD in the Github
+4. Created Github Actions for CI/CD 
