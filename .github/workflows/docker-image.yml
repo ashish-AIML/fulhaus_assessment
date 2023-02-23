@@ -1,18 +1,37 @@
-name: Docker Image CI
+name: CI/CD Pipeline with Docker Compose
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-
-  build:
-
-    runs-on: windows-latest
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker-compose -f "docker-compose.yml" --build
+    - uses: actions/checkout@v2
+      
+    - name: Set up Docker Compose
+      uses: docker/compose-cli-action@v0.4.0
+      
+    - name: Build and push Docker images
+      env:
+        REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+        REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      run: |
+        export IMAGE_TAG=${{ github.sha }}
+        docker-compose build
+        docker-compose push
+
+    - name: Deploy to production
+      env:
+        DOCKER_HOST: ssh://http://0.0.0.0:5000
+        DOCKER_COMPOSE_VERSION: 1.28.2
+        REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+        REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      run: |
+        docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD
+        docker-compose pull
+        docker-compose up -d
