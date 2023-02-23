@@ -40,7 +40,7 @@ def preprocess_image(image):
 # Define a route to predict the class of an input image
 @app.route('/predict', methods=['GET'])
 def predict():
-    print('code runnning')
+    print('code is now runnning')
     # Get the input image from the request
     image = request.files['image'].read()
     image = Image.open(io.BytesIO(image))
